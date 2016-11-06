@@ -1,0 +1,420 @@
+<mvc:View
+	controllerName="pricingTool.controller.Main"
+	xmlns:l="sap.ui.layout"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m">
+	
+	<Page
+		showHeader="false"
+		backgroundDesign= "List" >
+		<subHeader>
+			<Bar>
+			     <contentMiddle>
+                    <Label id="nsnLabel" text="NSN/NIIN" design="Bold" required="true"/>
+                    <Input
+                        id= "nsnSearch"             
+                        width="40%"         
+                        value= ""
+                        submit="onFilterNSN"
+                        liveChange="onNsnChange">
+                    </Input>
+                     <Button id="nsnButton"
+                             text="Search"
+                             type="Emphasized"
+                             enabled="false"
+                             press="onFilterNSN"
+                     >
+                     </Button>
+					 <Button id="pdf"
+                             text="PDF"
+                             type="Emphasized"
+                             enabled="true"
+                             press="onPDFMaker"
+                     >
+					 </Button>
+                </contentMiddle>
+			</Bar>
+		</subHeader>
+		<!--<content>
+			<SearchField maxLength= "25" width="50%" class="sapUiSmallMargin" />
+		</content>-->
+	</Page>
+	
+	<ObjectHeader
+        id="nsnOutput"          
+		binding=""
+		title="NSN/NIIN:"
+	 >
+	</ObjectHeader>
+
+	<l:Grid
+		class="sapUiSmallMarginTop"
+		hSpacing="2"
+		vSpacing= "3"
+		defaultSpan="L4 M9 S9">
+	
+	<l:content>	
+		<l:VerticalLayout width="100%"	>
+			<Label id = "PAWQ" text="Prior Award Quantity" design="Bold" textAlign="Right" required="true"
+			 />
+	<Input
+				id="awardQuantity"
+				type="Text"
+				width="100%">
+	</Input>
+		</l:VerticalLayout>
+			<l:VerticalLayout width="100%">
+			<Label id = "PUPid" text="Prior Unit Price (USD)" design="Bold" textAlign="Center" required="true"/>
+			<Input
+				id="unitPrice"
+				type="Text">
+	</Input>
+		</l:VerticalLayout>
+
+		<l:VerticalLayout width="100%">
+			<Label id = "CBQLabel" text="Current Buy Quantity" design="Bold" textAlign="Center" required="true"/>
+			<Input
+				id="buyQuantity"
+				type="Text">
+			</Input>
+		</l:VerticalLayout>
+		<l:VerticalLayout width="100%">
+	<Label id = "PUPLabel" text="Proposed Unit Price (USD)" design="Bold" textAlign="Center" required="true"/>
+			<Input
+				id="price"
+				type="Text">
+			</Input>
+			</l:VerticalLayout>
+			<l:VerticalLayout width="100%">
+	<Label id = "LearningCurveLabel" text="Learning Curve (%)" design="Bold" textAlign="Center" required="true"/>
+		<Input
+				id="learningCurve"
+				type="Text">
+		</Input>
+		</l:VerticalLayout>
+		<l:VerticalLayout width="100%">
+	<Label id="PADlabel" text="Prior Award Date" design="Bold" textAlign="Center" required="true"/>
+	<DatePicker
+				id="awardDate"
+				placeholder="Please pick a date.."
+				type="Date"
+				width="100%">
+	</DatePicker>
+	</l:VerticalLayout>
+
+	</l:content>
+	
+	</l:Grid>	
+    <Toolbar>
+	<ToolbarSpacer/>
+	<Button text="Evaluate Price" type="Accept" press="onPricePress"/>
+	<Button text="Clear" type="Accept" press="onClear"/>
+	</Toolbar>	
+    <Table 
+        id="idProductsTable"  
+		visible="false"
+		items="{
+			path: '/ProductCollection',
+			sorter: {
+				path: 'Vendor'
+			}
+		}">
+	
+		<columns>
+			<Column 
+				mergeDuplicates="true"
+				width ="10%"
+				hAlign="Left"
+				>
+				<FormattedText 
+					htmlText="NSN" 
+				/>
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				width ="6%"
+				demandPopin="false"
+				>
+				<FormattedText 
+					htmlText="Awd Date" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				width ="8%"
+				hAlign="Left"
+				demandPopin="false">
+				<FormattedText 
+					htmlText="Profit Ctr" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				demandPopin="false"
+				hAlign="Left">
+				<FormattedText 
+					htmlText="CAGE" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				hAlign="Left"
+				width="12%"
+				demandPopin="false">
+				<FormattedText 
+					htmlText="Vendor" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				width ="4%"
+				hAlign="Left"
+				demandPopin="false">
+				<FormattedText 
+					htmlText="Type" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				width ="7%"
+				hAlign="Left"
+				demandPopin="false">
+				<FormattedText 
+					htmlText="PIIN" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				width ="4%"
+				hAlign="Left"
+				demandPopin="false">
+				<FormattedText 
+					htmlText="PRC" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				hAlign="Left"
+				demandPopin="false">
+				<FormattedText 
+					htmlText="PPI Cost" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				width ="5%"
+				hAlign="Left"
+				demandPopin="false">
+				<FormattedText 
+					htmlText="Hist Cost" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				width ="4%"
+				hAlign="Left"
+				demandPopin="true">
+				<FormattedText 
+					htmlText="Unit" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				width ="5%"
+				hAlign="Left"
+				demandPopin="false">
+				<FormattedText 
+					htmlText="Hist PPI" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				width ="5%"
+				hAlign="Left"
+				demandPopin="false">
+				<FormattedText 
+					htmlText= "PPI" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				hAlign="Left"
+				demandPopin="false">
+				<FormattedText 
+					htmlText="PPI CF" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				hAlign="Left"
+				demandPopin="false">
+				<FormattedText 
+					htmlText="Quantity" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				hAlign="Left"
+				demandPopin="false">
+				<FormattedText 
+					htmlText="Tran. Number" />
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem>
+				<cells>
+					<Text
+						text="{NSN}"/>
+					<Text
+						text="{AwdDate}"/>
+					<Text
+						text="{ProfitCtr}" />
+					<Text
+						text="{CAGE}" />
+					<Text
+						text="{Vendor}" />
+					<Text
+						text="{Type}" />
+					<Text
+						text="{PIIN}" />
+					<Text
+						text="{PRC}" />
+					<Text
+						text="${PPICost}" />
+					<Text
+						text="${HistCost}" />
+					<Text
+						text="{Unit}" />
+					<Text
+						text="{HistPPI}" />
+					<Text
+						text="{CurrentPPI}" />
+					<Text
+						text="{PPIConversionFactor}" />
+					<Text
+						text="{Qty}" />
+					<Text
+						text="{TransactionNumber}" />
+				</cells>
+			</ColumnListItem>
+		</items>
+	</Table>
+	<l:Grid defaultSpan="L6 M9 S9" class="sapUiSmallMarginTop" id="gridThing">
+	 <l:VerticalLayout id="vlContent" width="100%">
+			<l:content>
+			<StandardListItem
+				title="Evaluation">
+				<layoutData>
+					<l:GridData span="L12 M12 S12" />
+				</layoutData>
+			</StandardListItem>
+			<StandardListItem
+				id ="value1"
+				title="NSN"
+				description="5320006018040" />
+			<StandardListItem
+				id ="value2"
+				title="Fair Market Price (FMP)"
+				description="$18.50" />
+			<StandardListItem
+				id ="value3"
+				title="Proposed Price"
+				description="$20.00" />
+			<StandardListItem
+				id ="value4"
+				title="Quantity"
+				description="90" />
+			<StandardListItem
+				id ="value5"
+				title="Total Extended Proposed Price"
+				description="$1800.00" />
+			<StandardListItem			
+				id ="value6"
+				title="% Difference From FMP"
+				description="8.12%" />
+			<StandardListItem
+				id ="value7"
+				title="Total Extended FMP"
+				description="$1645.00" />
+			<StandardListItem
+				id ="value8"
+				title="$ Difference From FMP"
+				description="$1.50" />
+			<StandardListItem
+				id ="value9"
+				title="Total Price Difference"
+				description="$135.00" />
+			<StandardListItem
+				id ="value10"
+				title="PPI Price Adjusted For Inflation"
+				description="$18.59" />
+			<StandardListItem
+				id ="value11"
+				title="BLS Index"
+				description="PCU332722332722" />
+			<StandardListItem
+				id ="value12"
+				title="Price at First Unit"
+				description="$23.97" />
+			<StandardListItem
+				id ="value13"
+				title="Current Cumulative Improvement Factor"
+				description="0.7716638" />
+			<StandardListItem
+				id ="value14"
+				title="Previous Cumulative Improvement Factor"
+				description="0.7754765" />
+			</l:content>
+		</l:VerticalLayout>	
+		<l:VerticalLayout id="v2Content" width="100%">
+			<l:content>
+			<StandardListItem
+				title="Selected Award Data">
+				<layoutData>
+					<l:GridData span="L12 M12 S12" linebreakL="true" linebreakM="true" linebreakS="true" />
+				</layoutData>
+			</StandardListItem>
+			<StandardListItem
+				id ="value15"
+				title="Vendor"
+				description="R. L. MORRISSEY ASSOCIATES, INC." />
+			<StandardListItem
+				id ="value16"
+				title="Transaction #"
+				description="8503392009" />
+			<StandardListItem
+				id ="value17"
+				title="PIIN:"
+				description="SPE5E416M220" />
+			<StandardListItem
+				id ="value18"
+				title="Unit"
+				description="EA" />
+			<StandardListItem
+				id ="value19"
+				title="Award Date"
+				description="20160701" />
+			<StandardListItem
+				id ="value20"
+				title="CAGE"
+				description="8U976" />
+			<StandardListItem
+				id ="value21"
+				title="Src. Type"
+				description="B" />
+			<StandardListItem
+				id ="value22"
+				title="Prc. Reas. Cd"
+				description="BI" />
+			<StandardListItem
+				id ="value23"
+				title="Hist. Cost"
+				description="$18.59" />
+			<StandardListItem
+				id ="value24"
+				title="PPI Cost"
+				description="$18.59" />
+			<StandardListItem
+				id ="value25"
+				title="Hist. PPI"
+				description="180.30" />
+			<StandardListItem
+				id ="value26"
+				title="Curr. PPI"
+				description="180.30" />
+			<StandardListItem
+				id ="value27"
+				title="PPI Factor"
+				description="1.00000" />
+			</l:content>
+		</l:VerticalLayout>
+	</l:Grid>  
+</mvc:View>
